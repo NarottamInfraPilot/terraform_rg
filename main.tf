@@ -5,7 +5,12 @@ terraform {
       version = "~>3.0"
     }
   }
-backend "azurerm" {}
+backend "azurerm" {
+resource_group_name   = "Narottam-rg"
+    storage_account_name  = "mystorage836753"
+    container_name        = "mystorage836753"
+    key                    = "statefile"
+}
 }
 
 provider "azurerm" {
