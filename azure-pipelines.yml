@@ -13,10 +13,12 @@ steps:
 - task: TerraformInstaller@1
   inputs:
     terraformVersion: 'latest'
+  displayName: terraform install ho raha hai
 
 
 
 - task: TerraformTask@5
+  
   inputs:
     provider: 'azurerm'
     command: 'init'
@@ -24,18 +26,22 @@ steps:
     backendAzureRmStorageAccountName: 'mystorage836753'
     backendAzureRmContainerName: 'mystorage836753'
     backendAzureRmKey: 'statefile'
+  displayName: terraform init command chal rahi hai
 
 - task: TerraformTask@5
   inputs:
     provider: 'azurerm'
     command: 'validate'
+  displayName: terraform validate command run ho rahi hai
 - task: TerraformTask@5
   inputs:
     provider: 'azurerm'
     command: 'plan'
     environmentServiceNameAzureRM: 'Demo-Service-Connection'
+  displayName: terraform plan command run ho rahi hai
 - task: TerraformTask@5
   inputs:
     provider: 'azurerm'
     command: 'apply'
     environmentServiceNameAzureRM: 'Demo-Service-Connection'
+  displayName: terraform apply command run ho rahi hai
