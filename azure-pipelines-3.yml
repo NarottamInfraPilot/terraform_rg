@@ -1,0 +1,16 @@
+trigger: none
+pool: demo_agent_pool
+steps:
+  - task: TerraformTask@5
+    inputs:
+      provider: 'azurerm'
+      command: 'init'
+      backendServiceArm: 'Demo-Service-Connection'
+      backendAzureRmStorageAccountName: 'mystorage836753'
+      backendAzureRmContainerName: 'mystorage836753'
+      backendAzureRmKey: 'terraformfile'
+  - task: TerraformTask@5
+    inputs:
+      provider: 'azurerm'
+      command: 'apply'
+      environmentServiceNameAzureRM: 'Demo-Service-Connection'
