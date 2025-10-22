@@ -29,7 +29,6 @@ jobs:
   - job:  
     pool: pool 
     displayName: terraform plan
-    dependsOn: Init_validate_scanning
     steps:
       - task: TerraformInstaller@1
         inputs:
