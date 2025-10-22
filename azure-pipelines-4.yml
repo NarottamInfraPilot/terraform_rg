@@ -26,7 +26,8 @@ jobs:
         inputs:
           version: 'v1.26.0'
     
-  - job:   
+  - job:  
+    pool: pool 
     displayName: terraform plan
     dependsOn: Init_validate_scanning
     steps:
