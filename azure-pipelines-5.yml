@@ -1,0 +1,88 @@
+trigger: none
+
+pool: demo_agent_pool
+
+jobs:
+  - job: terraform_Init_Validate_scanning
+    displayName: Terraform init validate scan chalega
+    steps:
+     
+      - task: TerraformInstaller@1
+        displayName: terraform install hoga
+        inputs:
+          terraformVersion: 'latest'
+      - task: TerraformTask@5
+        displayName: terraform init hoga
+        inputs:
+          provider: 'azurerm'
+          command: 'init'
+          backendServiceArm: 'Demo-Service-Connection'
+          backendAzureRmStorageAccountName: 'mystorage836753'
+          backendAzureRmContainerName: 'mystorage836753'
+          backendAzureRmKey: 'demofile'
+      - task: TerraformTask@5
+        displayName: terraform validate hoga
+        inputs:
+          provider: 'azurerm'
+          command: 'validate'
+      - task: tfsec@1
+        displayName: code scan ho raha hai
+        inputs:
+          version: 'v1.26.0'
+
+
+  - job: terraform_Init_plan
+    displayName: terraform init plan 
+    dependsOn: terraform_Init_Validate_scanning
+    steps:
+      - task: TerraformInstaller@1
+        displayName: terraform install hoga
+        inputs:
+          terraformVersion: 'latest'
+      - task: TerraformTask@5
+        displayName: terraform init hoga
+        inputs:
+          provider: 'azurerm'
+          command: 'init'
+          backendServiceArm: 'Demo-Service-Connection'
+          backendAzureRmStorageAccountName: 'mystorage836753'
+          backendAzureRmContainerName: 'mystorage836753'
+          backendAzureRmKey: 'demofile'
+      - task: TerraformTask@5
+        inputs:
+          provider: 'azurerm'
+          command: 'plan'
+          environmentServiceNameAzureRM: 'Demo-Service-Connection'
+
+  - job: Manual_Approval
+    displayName: Manual approval before apply
+    dependsOn: terraform_Init_plan
+    pool: server
+    steps:
+      - task: ManualValidation@1
+        inputs:
+          notifyUsers: 'narottamkumarsaw1999@gmail.com'
+          approvers: 'narottamkumarsaw1999@gmail.com'
+  - job: terraform_apply
+    displayName: terraform apply hoga
+    dependsOn: Manual_Approval
+    steps:
+      - task: TerraformInstaller@1
+        displayName: terraform install hoga
+        inputs:
+          terraformVersion: 'latest'
+      - task: TerraformTask@5
+        displayName: terraform init hoga
+        inputs:
+          provider: 'azurerm'
+          command: 'init'
+          backendServiceArm: 'Demo-Service-Connection'
+          backendAzureRmStorageAccountName: 'mystorage836753'
+          backendAzureRmContainerName: 'mystorage836753'
+          backendAzureRmKey: 'demofile'
+      - task: TerraformTask@5
+        inputs:
+          provider: 'azurerm'
+          command: 'apply'
+          environmentServiceNameAzureRM: 'Demo-Service-Connection'
+          
