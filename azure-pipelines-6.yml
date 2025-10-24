@@ -40,7 +40,7 @@ stages:
 # ------------------- Stage 2: Terraform Init & Plan -------------------
 - stage: Terraform_Init_Plan
   displayName: "Terraform Init & Plan"
-  dependsOn: Terraform_Init_Validate_Scan
+
   jobs:
     - job: terraform_Init_plan
       displayName: "Terraform init plan"
@@ -71,7 +71,7 @@ stages:
 # ------------------- Stage 3: Manual Approval -------------------
 - stage: Manual_Approval
   displayName: "Manual Approval Before Apply"
-  dependsOn: Terraform_Init_Plan
+
   jobs:
     - job: Manual_Validation
       displayName: "Manual Validation Job"
