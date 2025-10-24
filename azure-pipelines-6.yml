@@ -1,6 +1,8 @@
 trigger: none
 
-pool: demo_agent_pool
+pool:
+  name: demo_agent_pool
+
 
 stages:
 # ------------------- Stage 1: Terraform Init, Validate, Scan -------------------
