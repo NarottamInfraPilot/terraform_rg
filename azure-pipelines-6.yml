@@ -1,0 +1,116 @@
+trigger: none
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+# ------------------- Stage 1: Terraform Init, Validate, Scan -------------------
+- stage: Terraform_Init_Validate_Scan
+  displayName: "Terraform Init, Validate, and Code Scan"
+  jobs:
+    - job: terraform_Init_Validate_Scanning
+      displayName: "Terraform init validate scan chalega"
+      steps:
+        - task: TerraformInstaller@1
+          displayName: "terraform install hoga"
+          inputs:
+            terraformVersion: 'latest'
+
+        - task: TerraformTask@5
+          displayName: "terraform init hoga"
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            backendServiceArm: 'Demo-Service-Connection'
+            backendAzureRmStorageAccountName: 'mystorage836753'
+            backendAzureRmContainerName: 'mystorage836753'
+            backendAzureRmKey: 'demofile'
+
+        - task: TerraformTask@5
+          displayName: "terraform validate hoga"
+          inputs:
+            provider: 'azurerm'
+            command: 'validate'
+
+        - task: tfsec@1
+          displayName: "code scan ho raha hai"
+          inputs:
+            version: 'v1.26.0'
+
+
+# ------------------- Stage 2: Terraform Init & Plan -------------------
+- stage: Terraform_Init_Plan
+  displayName: "Terraform Init & Plan"
+  dependsOn: Terraform_Init_Validate_Scan
+  jobs:
+    - job: terraform_Init_plan
+      displayName: "Terraform init plan"
+      steps:
+        - task: TerraformInstaller@1
+          displayName: "terraform install hoga"
+          inputs:
+            terraformVersion: 'latest'
+
+        - task: TerraformTask@5
+          displayName: "terraform init hoga"
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            backendServiceArm: 'Demo-Service-Connection'
+            backendAzureRmStorageAccountName: 'mystorage836753'
+            backendAzureRmContainerName: 'mystorage836753'
+            backendAzureRmKey: 'demofile'
+
+        - task: TerraformTask@5
+          displayName: "terraform plan hoga"
+          inputs:
+            provider: 'azurerm'
+            command: 'plan'
+            environmentServiceNameAzureRM: 'Demo-Service-Connection'
+
+
+# ------------------- Stage 3: Manual Approval -------------------
+- stage: Manual_Approval
+  displayName: "Manual Approval Before Apply"
+  dependsOn: Terraform_Init_Plan
+  jobs:
+    - job: Manual_Validation
+      displayName: "Manual Validation Job"
+      pool: server
+      steps:
+        - task: ManualValidation@1
+          displayName: "Approval Required"
+          inputs:
+            notifyUsers: 'narottamkumarsaw1999@gmail.com'
+            approvers: 'narottamkumarsaw1999@gmail.com'
+
+
+# ------------------- Stage 4: Terraform Apply -------------------
+- stage: Terraform_Apply
+  displayName: "Terraform Apply Stage"
+  dependsOn: Manual_Approval
+  jobs:
+    - job: terraform_apply
+      displayName: "terraform apply hoga"
+      steps:
+        - task: TerraformInstaller@1
+          displayName: "terraform install hoga"
+          inputs:
+            terraformVersion: 'latest'
+
+        - task: TerraformTask@5
+          displayName: "terraform init hoga"
+          inputs:
+            provider: 'azurerm'
+            command: 'init'
+            backendServiceArm: 'Demo-Service-Connection'
+            backendAzureRmStorageAccountName: 'mystorage836753'
+            backendAzureRmContainerName: 'mystorage836753'
+            backendAzureRmKey: 'demofile'
+
+        - task: TerraformTask@5
+          displayName: "terraform apply hoga"
+          inputs:
+            provider: 'azurerm'
+            command: 'apply'
+            environmentServiceNameAzureRM: 'Demo-Service-Connection'
