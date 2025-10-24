@@ -7,6 +7,7 @@ pool:
 stages:
 # ------------------- Stage 1: Terraform Init, Validate, Scan -------------------
 - stage: Terraform_Init_Validate_Scan
+  dependsOn: []
   displayName: "Terraform Init, Validate, and Code Scan"
   jobs:
     - job: terraform_Init_Validate_Scanning
@@ -42,7 +43,7 @@ stages:
 # ------------------- Stage 2: Terraform Init & Plan -------------------
 - stage: Terraform_Init_Plan
   displayName: "Terraform Init & Plan"
-
+  dependsOn: []
   jobs:
     - job: terraform_Init_plan
       displayName: "Terraform init plan"
@@ -73,6 +74,7 @@ stages:
 # ------------------- Stage 3: Manual Approval -------------------
 - stage: Manual_Approval
   displayName: "Manual Approval Before Apply"
+  dependsOn: []
 
   jobs:
     - job: Manual_Validation
